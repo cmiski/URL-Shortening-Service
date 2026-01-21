@@ -36,8 +36,7 @@ Core Principles:
                     Kafka / Redpanda
          ┌───────────────┼────────────────┐
          ▼               ▼                ▼
-
-    Analytics Counters Abuse Detection
+        Analytics        Counters        Abuse Detection
 
 URL CREATION FLOW (WRITE PATH)
 

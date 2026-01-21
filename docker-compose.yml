@@ -1,0 +1,30 @@
+# compose file format version
+# version: "3.8" 
+
+# services (containers)
+services:
+  mongo: # service name --> mongo:27017
+  # official mongodb image, no docker file needed
+    image: mongo:6 # pulls MongoDB version 6 from docker hub
+    ports: 
+      - "27017:27017" # host:container
+
+  redis: # redis:6379
+    image: redis:7 # official redis image
+    ports: 
+      - "6379:6379"
+  
+  redpanda: # kafka alternative -> Kafka-compatible event streaming platform  --> redpanda:9092
+    image: redpandadata/redpanda:latest # pulls latest redpanda image
+    # make redpanda lightweight, dev-friendly, single-node
+    command:
+      - redpanda
+      - start             # start redpanda broker
+      - --overprovisioned # overprovisioned memory, optimized for locak/dev machines
+      - --smp 1           # number of cpu cores
+      - --memory 1G       # memory usage limit
+      - --node-id 0       # single node cluster
+      - --check=false     # disable/skips health/system checks -> needed for docker
+    ports:
+    # kafka compatible port -> used by producers and consumers
+      - "9092:9092"

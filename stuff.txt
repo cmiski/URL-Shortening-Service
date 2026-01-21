@@ -1,0 +1,24 @@
+initialize project
+  npm init -y
+
+do "dev" : "node --watch " for nodemon watching
+
+install dependencies
+  npm install express dotenv zod pino
+  npm install ioredis kafkajs mongoose
+
+docker-compose.yml is a config file for docker compose to define and run multi container docker applications (kinda like a blueprint that tells docker how to build and run the application)
+  every container(service) can talk to each other uisng service name
+
+  "docker compose up -d" --> starts all containers
+  "docker compose ps" --> displays all running containers
+  "docker composr logs" --> displays all logs
+  "docker compose down": stops all containers, but leaves volumes intact
+  "docker compose down -v": stops all containers and removes all volumes
+
+  "docker exec -it <container name> redis-cli" --> to access redis cli
+  "docker exec -it <container name> redis-cli ping" --> to check if redis is running
+  "docker exec -it <container name> rpk cluster info" --> to check if redpanda is running
+
+  my yml file is a optimezed setup for backend systems, event-driven architecture, Caching + DB + Streaming, microservices etc
+    refer docker-compose.yml for details
