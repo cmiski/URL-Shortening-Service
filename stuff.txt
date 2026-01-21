@@ -22,3 +22,13 @@ docker-compose.yml is a config file for docker compose to define and run multi c
 
   my yml file is a optimezed setup for backend systems, event-driven architecture, Caching + DB + Streaming, microservices etc
     refer docker-compose.yml for details
+
+  PHASE 1: CORE REDIRECT ENGINE (performance critical)
+    --> this defines the latency discipline for the entire project
+
+    --? Note : "The redirect path must be boring, fast, and dumb."
+
+      ^^ created basic foundational express server [src/app.js, src/server.js]
+      ^^ created health check endpoint [src/routes/health.js]
+      ^^ configured DB connection [src/config/db.js]
+      ^^ configured Redis connection [src/config/redis.js]
