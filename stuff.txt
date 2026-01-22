@@ -35,3 +35,11 @@ docker-compose.yml is a config file for docker compose to define and run multi c
       ^^ created URL model [src/models/url.model.js]
 
     "index : true" in the DB URL schema means that the field will be indexed for faster lookup O(log n) instead of O(n) --> Mongo creates a B-tree index internally 
+
+
+  CACHE-ASIDE STRATEGY/PATTERN : 
+      1) cache hit : read data from cache if available
+      2) cache miss : read data from DB
+      3) wtite data to cache
+
+    Note: for read only paths always use lean()
