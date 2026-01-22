@@ -32,3 +32,6 @@ docker-compose.yml is a config file for docker compose to define and run multi c
       ^^ created health check endpoint [src/routes/health.js]
       ^^ configured DB connection [src/config/db.js]
       ^^ configured Redis connection [src/config/redis.js]
+      ^^ created URL model [src/models/url.model.js]
+
+    "index : true" in the DB URL schema means that the field will be indexed for faster lookup O(log n) instead of O(n) --> Mongo creates a B-tree index internally 
