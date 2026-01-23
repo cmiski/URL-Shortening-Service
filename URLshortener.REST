@@ -1,2 +1,6 @@
 ### GET /health
 GET http://localhost:3000/health
+
+
+### GET /:shortCode
+GET http://localhost:3000/test123

@@ -43,3 +43,7 @@ docker-compose.yml is a config file for docker compose to define and run multi c
       3) wtite data to cache
 
     Note: for read only paths always use lean()
+
+      ^^ created redirect service : resolveShortCode -> finds the long url and returns it to the redirect controller [src/services/redirect.service.js]
+      ^^ created redirect controller : redirectHandler -> if long Url found redirect to that url and send 302 [src/controllers/redirect.controller.js]
+      ^^ created redirect route : /:shortcut [src/routes/redirect.js]
