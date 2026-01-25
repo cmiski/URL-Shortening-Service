@@ -7,9 +7,11 @@ export const shortenSchema = z.object({
     .min(1, "Url is required")
     .refine((val) => {
       let url;
+
       try {
-        // only for parsing, NOT normalization
-        url = new URL(val.startsWith("http") ? val : `https://${val}`);
+        const hasProtocol = /^[a-zA-Z][a-zA-Z\d+.-]*:\/\//.test(val);
+
+        url = new URL(hasProtocol ? val : `https://${val}`);
       } catch {
         return false;
       }
@@ -17,6 +19,7 @@ export const shortenSchema = z.object({
       if (!["http:", "https:"].includes(url.protocol)) {
         return false;
       }
+
       return isValidHostname(url.hostname);
     }, "Invalid URL format"),
 });
