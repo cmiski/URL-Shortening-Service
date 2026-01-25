@@ -20,9 +20,9 @@ export const shortUrlHandler = async (req, res) => {
   const { longUrl } = parseResult.data; // destructure longUrl from parsed request body
 
   // zod now normalize the URL for us so no need to do it here --> changed it again zod doesnt do it now
-  const normalizedUrl = normalizeUrl(longUrl);
+  // const normalizedUrl = normalizeUrl(longUrl);  --> removed normalization from the controller and will be done in service layer
 
-  const result = await shortenUrl(normalizedUrl);
+  const result = await shortenUrl(longUrl);
 
   return res.status(201).json(result); // 201 : created
 };

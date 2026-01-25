@@ -1,11 +1,14 @@
 import Url from "../models/url.model.js";
 import { generateBase62 } from "../utils/base62.js";
 import redis from "../config/redis.js";
+import { normalizeUrl } from "../utils/normalizeUrl.js";
 
 export const shortenUrl = async (longUrl) => {
+  // normalize URL
+  const normalizedUrl = normalizeUrl(longUrl);
   // idempotency check
   const existing = await Url.findOne({
-    longUrl,
+    normalizedUrl,
     isActive: true,
   }).lean();
 
@@ -25,7 +28,8 @@ export const shortenUrl = async (longUrl) => {
     try {
       urlDoc = await Url.create({
         shortCode,
-        longUrl,
+        longUrl, // redirect target
+        normalizedUrl, // canonical identity
         isActive: true,
       });
     } catch (err) {

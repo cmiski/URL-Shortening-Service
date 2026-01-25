@@ -151,3 +151,9 @@ URL CREATION API -> WRITE PATH ENGINEERING
 
 
   "docker exec -it urlshorteningservice-redis-1 redis-cli MONITOR" --> to monitor redis
+
+
+# Idempotency is not being enforced at DB level -> i dont store a canonical URL field 00> db has no way to enforce 'same URL only once'
+
+
+Note: Different representations → same canonical URL → same shortCode
