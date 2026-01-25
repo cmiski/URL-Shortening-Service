@@ -12,6 +12,12 @@ const urlSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    normalizedUrl: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
     isActive: {
       type: Boolean,
       default: true,

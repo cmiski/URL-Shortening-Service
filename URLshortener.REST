@@ -3,7 +3,9 @@ GET http://localhost:3000/health
 
 
 ### GET /:shortCode
-GET http://localhost:3000/test123
+GET http://localhost:3000/g73yVvi
+### GET /:shortCode
+GET http://localhost:3000/jqlodcd
 
 
 ### POST /api/shorten
@@ -46,5 +48,5 @@ POST http://localhost:3000/api/shorten
 Content-Type: application/json
 
 {
-  "longUrl": ""
+  "longUrl": "twitter.com"
 }

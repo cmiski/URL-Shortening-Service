@@ -4,14 +4,18 @@ import redis from "../config/redis.js";
 import Url from "../models/url.model.js";
 
 export const resolveShortCode = async (shortCode) => {
-  const cacheKey = `short:${shortCode}`;
+  const cacheKey = `url:${shortCode}`;
 
   // redis first --> hot path
+  // console.log("About to check Redis");
   const cachedUrl = await redis.get(cacheKey);
   if (cachedUrl) {
+    // console.log("Found in Redis");
+
     return cachedUrl;
   }
 
+  // console.log("Not found in Redis");
   // DB fallback --> cold path
   const urlDoc = await Url.findOne({
     shortCode, // indexed lookup

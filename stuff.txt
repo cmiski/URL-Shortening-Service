@@ -143,3 +143,11 @@ URL CREATION API -> WRITE PATH ENGINEERING
         ^^ created isValidHostname() to check if a hostname is valid [src/utils/isValidHostname.js]
         ^^ fixed validation --> no normalization here only validate [src/validation/shorten.schema.js]
         ^^ updated shortenUrlHandler() again to  use normalizeUrl() [src/controllers/shorten.controller.js]
+
+
+        ^^ updated zod schema (see file for details) [src/validation/shorten.schema.js]
+
+        NOTE: "Be nice to users (accept urls without protocol), but be strict about security (only http/https + valid public-looking hostnames)"
+
+
+  "docker exec -it urlshorteningservice-redis-1 redis-cli MONITOR" --> to monitor redis
