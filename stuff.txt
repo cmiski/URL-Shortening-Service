@@ -157,3 +157,11 @@ URL CREATION API -> WRITE PATH ENGINEERING
 
 
 Note: Different representations → same canonical URL → same shortCode
+
+
+idempotency + race-condition shield in my db : {
+    v: 2,
+    key: { normalizedUrl: 1 },
+    name: 'normalizedUrl_1',
+    unique: true
+  }
