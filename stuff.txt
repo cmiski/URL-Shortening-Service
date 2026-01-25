@@ -47,3 +47,19 @@ docker-compose.yml is a config file for docker compose to define and run multi c
       ^^ created redirect service : resolveShortCode -> finds the long url and returns it to the redirect controller [src/services/redirect.service.js]
       ^^ created redirect controller : redirectHandler -> if long Url found redirect to that url and send 302 [src/controllers/redirect.controller.js]
       ^^ created redirect route : /:shortcut [src/routes/redirect.js]
+
+
+    Note: never run plain mongosh for docker db, use "docker exec -it urlshorteningservice-mongo-1 mongosh"
+
+
+    My redirect is working now (it redirects to gws i.e goole web server) so it hides the 302 and just show 200 on the redirected url
+
+      current flow : 
+        Client
+           ──▶ My server (302 Redirect)
+                 ──▶ https://google.com
+                       ──▶ Google responds with 200 OK + HTML
+
+
+        So rn, i have a high-performance redirect path with redis-first cache-aside strategy.
+

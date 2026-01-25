@@ -10,5 +10,6 @@ export const redirectHandler = async (req, res) => {
   }
 
   // 302 : found --> analytics-friendly
-  res.status(302).redirect(longUrl);
+  // res.status(302).redirect(longUrl); ->
+  return res.redirect(302, longUrl); // if i dont add 302 it automatically defaults to 302
 };
