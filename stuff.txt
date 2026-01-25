@@ -112,3 +112,34 @@ URL CREATION API -> WRITE PATH ENGINEERING
           & collision retry loop : handle collisions deterministically
           & race-safe : handle multiple requests at the same time
           & redis warm up : first redirect is already cached
+
+
+  INPUT VALIDATION AND URL NORMALIZATION
+    ill reject invalid input/requests early  using ZOD
+    & normalize URLs at the boundry so idempotency is actually correct -> google.com , http://google.com , https://google.com , www.google.com all are the same thing
+
+
+    ^^created shorten.schema.js to validate input using zod [src/validation/shorten.schema.js]
+        --> if any of this fails -> No DB call, No redis, No kafka, No wasted CPU
+
+    ^^ created normalizeUrl() to normalize URLs (read file for details) [src/utils/normalizeUrl.js]
+    ^^ updated shortenUrlHandler() to validate req body using zod safeParse() and use normalizeUrl() [src/controllers/shorten.controller.js]
+
+
+  as zod was validating before normalizing(before was in the controller) it wasnt treating "google.com" as a valid URL 
+      so i had to add normalization in zod schema and remove normalization from the controller
+
+      now that is fixed but i found a new bug if i send any "not-a-valid-url" it  makes it a valid url format and generates a shortURL for it.
+
+        This should never be accepted by a production URL shortener
+          Note: Normalization must NEVER make an invalid URL valid
+
+
+        z/string().url() --> only checks url syntax, scheme exists but not check the DNS validity
+        hostname must contain a dot 
+        validation must happen before normalization
+
+
+        ^^ created isValidHostname() to check if a hostname is valid [src/utils/isValidHostname.js]
+        ^^ fixed validation --> no normalization here only validate [src/validation/shorten.schema.js]
+        ^^ updated shortenUrlHandler() again to  use normalizeUrl() [src/controllers/shorten.controller.js]

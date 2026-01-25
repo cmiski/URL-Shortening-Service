@@ -13,3 +13,38 @@ Content-Type: application/json
 {
   "longUrl": "https://google.com"
 }
+### POST /api/shorten
+POST http://localhost:3000/api/shorten
+Content-Type: application/json
+
+{
+  "longUrl": "HTTPS://GOOGLE.COM"
+}
+### POST /api/shorten
+POST http://localhost:3000/api/shorten
+Content-Type: application/json
+
+{
+  "longUrl": "https://google.com/" 
+}
+### POST /api/shorten
+POST http://localhost:3000/api/shorten
+Content-Type: application/json
+
+{
+  "longUrl": "google.com"
+}
+### POST /api/shorten
+POST http://localhost:3000/api/shorten
+Content-Type: application/json
+
+{
+  "longUrl": "not-a-url"
+}
+### POST /api/shorten
+POST http://localhost:3000/api/shorten
+Content-Type: application/json
+
+{
+  "longUrl": ""
+}
