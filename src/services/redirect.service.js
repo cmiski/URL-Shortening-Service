@@ -4,8 +4,6 @@ import redis from "../config/redis.js";
 import Url from "../models/url.model.js";
 
 export const resolveShortCode = async (shortCode) => {
-  console.log("🧠 Mongoose collection:", Url.collection.name);
-
   const cacheKey = `short:${shortCode}`;
 
   // redis first --> hot path
@@ -20,8 +18,6 @@ export const resolveShortCode = async (shortCode) => {
     isActive: true,
     // $or: [{ expiresAt: null }, { expiresAt: { $gt: new Date() } }],
   }).lean(); // returns a plain js object not a mongoose document -> faster, less overhead and memory usage
-
-  console.log("DB lookup result:", urlDoc);
 
   if (!urlDoc) {
     return null;

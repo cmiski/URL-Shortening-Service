@@ -63,3 +63,52 @@ docker-compose.yml is a config file for docker compose to define and run multi c
 
         So rn, i have a high-performance redirect path with redis-first cache-aside strategy.
 
+
+URL CREATION API -> WRITE PATH ENGINEERING
+
+  POST /api/shorten -> accepts a long URL, return a shortcode and is idempotent(API behavior -> what the client sees) meaning that if the same long url is sent again, it will return the same shortcode, is also collision safe(ty is about what the database guarantees) meaning no two urls can have the same shortcode (base62 + counter is always collision free), warms redis(optimise future reads) and emits Kafka events(async non blocking)
+                    
+    Architecture : POST /api/shorten --> validate input --> check DB(idempotency) --> Generate shortcode --> Insert (on collisions -> retry) --> write-through Cache in Redis --> Emit kafka event (async, fire and forget) -> return response
+
+
+  Note: for data-cacheing i am using both 
+    
+    1) Cache-Aside i.e lazy cacheing on read(redirect)
+      --> redis is populated only after a read happen
+      --> this is good but it causes cold cache problem i.e. the first redirect is slower cuz it hits the DB then only it goes into redis after the first read
+      --> also bad cuz of Thundering Herd problem -> imagine 10000 req -> redis miss(cold cache) -> DB spikes -> latency fucked -> outage
+    
+    2) Write-through i.e 'eager cacheing' on write/create ----> warming the cache at creation
+      --> redis is populated on write i.e. when data is written to the DB, it is also written to Redis immediately, so even the first redirect is fast and not expensive cuz it is cache HIT
+      --> zero DB hits on the first redirect
+
+  Note: write on HOT paths are dangerous --> Slow path (create) does extra work to make HOT path(redirect) fast
+
+    ^^ created generateBase62() to generate a random base62 string of a given length [src/utils/base62.js]
+
+    request -> 
+              {
+                "longUrl": "https://google.com",
+              }
+    response -> 
+                {
+                  "shortCode": "aZ3X91q"
+                  "shortUrl": "https://localhost:3000/aZ3X91q"
+                }
+
+    Note: DB based idempotency check because redis is volatile and DB is authoritative
+
+        race-safe : means my code behaves correctly even when multiple requests run at the same time simultaneously
+            --> my code is atomicly race-safe proof -> shortcode model is unique therefore no two documents can share the same shortcode
+            --> Race-safe code lets the database decide, and handles failure — not the other way around.
+            --> even if two requests generate the same shortcode, mongodb reject the second request and generates a new shortcode for it and handeling errors gracefully
+
+    ^^ created shortenUrlHandler() to handle the POST /api/shorten request [src/controllers/shorten.controller.js]
+    ^^ created /shorten route [src/routes/shorten.js]
+    ^^ created /api -> shortenUrl [src/app.js]
+
+
+        This all ensures Idempotency : same URL -> same shortcode : avoids DB bloat
+          & collision retry loop : handle collisions deterministically
+          & race-safe : handle multiple requests at the same time
+          & redis warm up : first redirect is already cached
