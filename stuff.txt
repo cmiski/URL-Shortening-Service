@@ -175,3 +175,21 @@ Redis-Backed Idempotency --> Hot Path Optimization --> make it fast
 
 
   for url validation i am also checking DNS validity 
+
+
+  was having a redirect bug where it was redirecting to longUrl which was not normalised so created a new field in DB called rawLongUrl abd made longeUrl:normalizedUrl
+
+
+  system status as of rn:
+    Normalization is done before persistence
+    DB-lvl uniqueness on normalizedUrl
+    idempotent POST /api/shorten
+    correct redirection on GET /:shortCode
+
+    Redis hot path for /api/shorten and /:shortCode
+    DB hits avoided for repeated requests
+
+    Source of truth is DB
+    Cahche : Redis
+    Race safe creation
+    explicit user inputed raw vs canonical data sepration
