@@ -8,6 +8,10 @@ const urlSchema = new mongoose.Schema(
       unique: true, // guarantees no two URLs collide
       index: true, // faster lookup to accomodate traffic
     },
+    rawLongUrl: {
+      type: String,
+      required: true,
+    },
     longUrl: {
       type: String,
       required: true,

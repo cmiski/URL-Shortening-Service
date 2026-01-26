@@ -165,3 +165,13 @@ idempotency + race-condition shield in my db : {
     name: 'normalizedUrl_1',
     unique: true
   }
+
+
+Redis-Backed Idempotency --> Hot Path Optimization --> make it fast
+
+    for POST /api/shorten : check redis first -> if found : return immediately (0 DB calls/hits) -> if not found : hit DB and write to redis
+
+  shorten.service structure -> normalize --> redis.get -->if hit, return --> try create : catch duplicate :find --> redis.set -->return
+
+
+  for url validation i am also checking DNS validity 
