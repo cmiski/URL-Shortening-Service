@@ -221,3 +221,29 @@ CLICK TRACKING ON redirect
 
         
         ^^ created a click.consumer.js to handle click events [src/consumers/click.consumer.js]
+
+
+        next ill revamp this into KafkaBasedClick Analytics
+
+
+
+      ^^ created kafka.js to configure kafka [src/config/kafka.js]
+
+        Note: kafka connections are expensive so we must have only one producer + one consumer per process
+
+
+        advantages of using redpanda :much faster, lower memory/CPU usage, simpler to run (often single binary), great for dev & smaller production setups.
+
+        groupId: "click-analytics-group" :
+                                        This is the consumer group name.
+                                        → All consumers with the same groupId work together as a team:
+                                        Kafka divides the partitions among them (load balancing)
+                                        If one crashes, others take over (fault tolerance)
+                                        Commits offsets as a group → ensures "at-least-once" or "exactly-once" processing
+
+    ^^ created kafka topic contracts [sec/events/kafka.topics.js]
+
+
+
+"docker exec -it urlshorteningservice-redpanda-1 rpk topic consume url.click" : for redpanda cli
+"docker exec -it urlshorteningservice-redis-1 redis-cli MONITOR" : redis monitoring cli

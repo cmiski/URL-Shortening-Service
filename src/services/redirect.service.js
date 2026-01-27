@@ -3,8 +3,11 @@
 import redis from "../config/redis.js";
 import Url from "../models/url.model.js";
 
-import { eventBus } from "../events/eventBus.js";
-import { CLICK_EVENT } from "../events/click.events.js";
+// import { eventBus } from "../events/eventBus.js";
+// import { CLICK_EVENT } from "../events/click.events.js";
+
+import { producer } from "../config/kafka.js";
+import { TOPICS } from "../events/kafka.topics.js";
 
 export const resolveShortCode = async (shortCode) => {
   const cacheKey = `url:${shortCode}`;
@@ -38,6 +41,8 @@ export const resolveShortCode = async (shortCode) => {
   return urlDoc.longUrl;
 };
 
+// DB induced
+
 // export async function recordClick(shortCode) {
 //   await Url.updateOne(
 //     { shortCode, isActive: true },
@@ -51,7 +56,23 @@ export const resolveShortCode = async (shortCode) => {
 //   );
 // }
 
+// simulating kafka
+
 // emitter function
-export function emitClickEvent(payload) {
-  eventBus.emit(CLICK_EVENT, payload);
+// export function emitClickEvent(payload) {
+//   eventBus.emit(CLICK_EVENT, payload);
+// }
+
+// kafka
+
+export async function emitClickEvent(payload) {
+  await producer.send({
+    topic: TOPICS.CLICK,
+    messages: [
+      {
+        key: payload.shortCode,
+        value: JSON.stringify(payload),
+      },
+    ],
+  });
 }
