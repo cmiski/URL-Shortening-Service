@@ -200,4 +200,24 @@ CLICK TRACKING ON redirect
     ^^ update url model to include clickCount and lastClickeAt fields [src/models/url.model.js]
     ^^ added recordClick() that updates the clickCount and lastClickedAt fields [src/services/redirect.service.js]
 
-    click tracking on redirects is working.
+    click tracking on redirects is working(rn async DB analytics).
+
+    Next Event driven Click Analytics--> redirect emits an event not a DB write, something else handles persistence
+
+      ill decouple click analytics using event driven consumer
+
+
+      ^^ created an event bus(kafka stand in) to handle click analytics [src/events/eventBus.js]
+            use Nodejs builtin EventEmitter class
+
+
+      ^^ definea a click event contract [src/events/click.event.js]
+
+
+      ill now emit click events and remove DB writes from redirect.service.js
+      seprate redirect and analytics
+
+      even though recordClick() was fire and forget, it was still a DB write
+
+        
+        ^^ created a click.consumer.js to handle click events [src/consumers/click.consumer.js]

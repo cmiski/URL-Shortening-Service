@@ -1,4 +1,7 @@
-import { resolveShortCode, recordClick } from "../services/redirect.service.js";
+import {
+  resolveShortCode,
+  emitClickEvent,
+} from "../services/redirect.service.js";
 
 export const redirectHandler = async (req, res) => {
   const { shortCode } = req.params; // destructure shortCode from request params
@@ -16,5 +19,10 @@ export const redirectHandler = async (req, res) => {
   res.redirect(302, longUrl); // if i dont add 302 it automatically defaults to 302
 
   // fire-and-forget analytics
-  recordClick(shortCode).catch(console.error);
+  // recordClick(shortCode).catch(console.error);
+
+  emitClickEvent({
+    shortCode,
+    clickedAt: new Date(),
+  });
 };

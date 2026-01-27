@@ -3,6 +3,9 @@
 import redis from "../config/redis.js";
 import Url from "../models/url.model.js";
 
+import { eventBus } from "../events/eventBus.js";
+import { CLICK_EVENT } from "../events/click.events.js";
+
 export const resolveShortCode = async (shortCode) => {
   const cacheKey = `url:${shortCode}`;
 
@@ -35,12 +38,20 @@ export const resolveShortCode = async (shortCode) => {
   return urlDoc.longUrl;
 };
 
-export async function recordClick(shortCode) {
-  await Url.updateOne(
-    { shortCode },
-    {
-      $inc: { clickCount: 1 },
-      $set: { lastClickedAt: new Date() },
-    },
-  );
+// export async function recordClick(shortCode) {
+//   await Url.updateOne(
+//     { shortCode, isActive: true },
+//     {
+//       $inc: { clickCount: 1 },
+//       $set: { lastClickedAt: new Date() },
+//     },
+//     {
+//       upsert: false, // is also added by default is not explicitly specified --> says never create new document if shortCode not found
+//     },
+//   );
+// }
+
+// emitter function
+export function emitClickEvent(payload) {
+  eventBus.emit(CLICK_EVENT, payload);
 }
