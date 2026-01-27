@@ -34,3 +34,13 @@ export const resolveShortCode = async (shortCode) => {
 
   return urlDoc.longUrl;
 };
+
+export async function recordClick(shortCode) {
+  await Url.updateOne(
+    { shortCode },
+    {
+      $inc: { clickCount: 1 },
+      $set: { lastClickedAt: new Date() },
+    },
+  );
+}

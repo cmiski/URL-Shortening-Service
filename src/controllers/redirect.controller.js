@@ -1,4 +1,4 @@
-import { resolveShortCode } from "../services/redirect.service.js";
+import { resolveShortCode, recordClick } from "../services/redirect.service.js";
 
 export const redirectHandler = async (req, res) => {
   const { shortCode } = req.params; // destructure shortCode from request params
@@ -9,7 +9,12 @@ export const redirectHandler = async (req, res) => {
     return res.status(404).json({ message: "URL not found" });
   }
 
+  //redirect immediately
+
   // 302 : found --> analytics-friendly
   // res.status(302).redirect(longUrl); ->
-  return res.redirect(302, longUrl); // if i dont add 302 it automatically defaults to 302
+  res.redirect(302, longUrl); // if i dont add 302 it automatically defaults to 302
+
+  // fire-and-forget analytics
+  recordClick(shortCode).catch(console.error);
 };

@@ -193,3 +193,11 @@ Redis-Backed Idempotency --> Hot Path Optimization --> make it fast
     Cahche : Redis
     Race safe creation
     explicit user inputed raw vs canonical data sepration
+
+
+
+CLICK TRACKING ON redirect 
+    ^^ update url model to include clickCount and lastClickeAt fields [src/models/url.model.js]
+    ^^ added recordClick() that updates the clickCount and lastClickedAt fields [src/services/redirect.service.js]
+
+    click tracking on redirects is working.
