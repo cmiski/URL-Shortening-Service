@@ -1,0 +1,195 @@
+.header {
+  padding: var(--space-6) 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.logoWrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.logo {
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: 700;
+  letter-spacing: -0.05em;
+  color: var(--color-text-primary);
+}
+
+.statusDot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-success);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--color-success);
+  animation: pulse 3s infinite;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: 0 0 var(--space-16);
+}
+
+.shortenerSection {
+  max-width: 100%;
+  padding-top: var(--space-4);
+}
+
+.resultSection {
+  animation: slideUp 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.resultCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-6) !important;
+  /* Glass effect applied via global class, specific overrides here */
+  border-radius: var(--radius-md);
+}
+
+.cardContent {
+  display: flex;
+  gap: var(--space-6);
+  justify-content: space-between;
+}
+
+.linkInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-2);
+  flex: 1;
+  overflow: hidden;
+}
+
+.qrWrapper {
+  flex-shrink: 0;
+}
+
+.label {
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.shortLink {
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--text-xl);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+}
+
+.shortLink:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.actionBtn {
+  flex: 1;
+}
+
+.footer {
+  text-align: center;
+  padding: var(--space-8) 0;
+  margin-top: auto;
+  border-top: 1px solid var(--color-border);
+}
+
+.footerContent {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.githubLink {
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.githubLink:hover {
+  color: var(--color-text-primary);
+  text-decoration: underline;
+}
+
+.version {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-border);
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .cardContent {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .qrWrapper {
+    order: -1;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .logo {
+    font-size: var(--text-lg);
+  }
+}
