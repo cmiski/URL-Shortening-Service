@@ -1,0 +1,178 @@
+:root {
+  /* Default Dark Mode (Cyberpunk Minimal) */
+  --color-bg: #0a0a0a;
+  --color-surface: rgba(20, 20, 20, 0.7);
+  /* Translucent for glass */
+  --color-surface-hover: rgba(31, 31, 31, 0.8);
+
+  --color-text-primary: #ededed;
+  --color-text-secondary: #888888;
+  --color-border: rgba(38, 38, 38, 0.5);
+  /* Subtle border */
+
+  --color-accent: #c4a7e7;
+  --color-accent-hover: #d2bcf3;
+
+  --color-success: #8ccf7e;
+  --color-error: #ea6962;
+
+  /* Glass Effect */
+  --glass-blur: 12px;
+  --glass-border: 1px solid rgba(255, 255, 255, 0.05);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2rem;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Layout */
+  --container-width: 680px;
+  --radius-sm: 6px;
+  --radius-md: 16px;
+
+  /* Animation - Smoother */
+  --transition-fast: 200ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transition-normal: 400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  --transition-bounce: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Light Mode Overrides */
+[data-theme='light'] {
+  --color-bg: #ffffff;
+  /* Pure white for better contrast */
+  --color-surface: rgba(245, 245, 247, 0.8);
+  --color-surface-hover: rgba(230, 230, 235, 0.9);
+
+  --color-text-primary: #1d1d1f;
+  --color-text-secondary: #6e6e73;
+  --color-border: rgba(0, 0, 0, 0.1);
+
+  --color-accent: #6200ee;
+  /* Vibrant violet */
+  --color-accent-hover: #7c4dff;
+
+  --color-success: #34c759;
+  --color-error: #ff3b30;
+
+  --glass-border: 1px solid rgba(0, 0, 0, 0.05);
+  --glass-shadow: 0 8px 24px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Light Mode Specific Orb Fix */
+[data-theme='light'] body::after {
+  opacity: 0.15;
+  /* Increased opacity for light mode */
+  background: radial-gradient(circle, var(--color-accent) 0%, transparent 60%);
+  mix-blend-mode: multiply;
+  /* Better blending on white */
+}
+
+/* Texture Overlay */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: overlay;
+}
+
+/* Ambient Orbs (Shared) */
+body::after {
+  content: "";
+  position: fixed;
+  top: -10%;
+  right: -10%;
+  width: 70vw;
+  height: 70vw;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--color-accent) 0%, transparent 70%);
+  opacity: 0.08;
+  filter: blur(80px);
+  z-index: -1;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+input,
+button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+#root {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+/* Utilities */
+.container {
+  width: 100%;
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+.text-mono {
+  font-family: var(--font-mono);
+}
+
+/* Glass Utility Class */
+.glass {
+  background: var(--color-surface);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+:root {
+  --color-btn-primary-hover-bg: #d2bcf3;
+  --color-btn-primary-hover-text: #0a0a0a;
+}
+
+[data-theme='light'] {
+  --color-btn-primary-hover-bg: #6200ee;
+  --color-btn-primary-hover-text: #ffffff;
+}
