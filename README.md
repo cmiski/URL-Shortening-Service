@@ -1,117 +1,125 @@
-Project Goals:
+# SHORTsee | High-Performance URL Shortener
 
-1. Low Latency(redirects in <20ms)
-2. High throughput
-3. Horizontal scalability
-4. Fault tolerant
-5. Observable
-6. Abuse resistant
+**SHORTsee** is a production-grade URL shortening service designed for speed, reliability, and usability. It features a blazing-fast backend (Redis + MongoDB + Kafka) and a polished, "Cyberpunk Minimal" React frontend.
 
-Core Principles:
+![Frontend Preview](https://via.placeholder.com/800x400?text=SHORTsee+Frontend+Preview)
 
-1.  Redirect path must be minimal
-2.  Reads ≫ Writes (read-heavy system)
-3.  Async everything except redirect
-4.  Cache first, DB second
-5.  Events, not blocking logic
-6.  Fail gracefully
+---
 
-                   ┌──────────────┐
-                   │   Clients     │
-                   └──────┬───────┘
-                          │
-                  ┌───────▼────────┐
-                  │  API Gateway    │
-                  │ (Express API)   │
-                  └───────┬────────┘
-                          │
-         ┌────────────────▼────────────────┐
-         │       URL Service (Core)         │
-         │----------------------------------│
-         │  Redis (HOT PATH)                │
-         │  MongoDB (SOURCE OF TRUTH)       │
-         └───────────────┬─────────────────┘
-                         │ (async events)
-                         ▼
-                    Kafka / Redpanda
-         ┌───────────────┼────────────────┐
-         ▼               ▼                ▼
-        Analytics        Counters        Abuse Detection
+## Features
 
-URL CREATION FLOW (WRITE PATH)
+### Frontend (v3.3)
+- **Modern UI**: "Cyberpunk Minimal" aesthetic with glassmorphism and ambient effects.
+- **Theming**: robust Dark/Light mode switcher with persistent preferences.
+- **Smart UX**: 
+  - Auto-generated **QR Codes** for every link.
+  - **Local History** to track your shortened URLs.
+  - **One-click Copy** and Share functionality.
+- **Performance**: Built with Vite + React for instant loads.
 
-Client
-→ POST /api/v1/urls
-→ Validate URL
-→ Generate shortCode
-→ Save to DB
-→ Cache in Redis
-→ Emit URL_CREATED event
-← short URL
+### Backend Performance Strategy
+- **Low Latency**: Redirects in <20ms using Redis (Hot Path).
+- **Architecture**:
+  - **Write Path**: Async processing with Kafka/Redpanda.
+  - **Read Path**: Cache-first (Redis) -> DB (MongoDB) fallback.
+  - **Scalability**: Stateless API design.
+- **Reliability**: Race-condition proof ID generation (Base62).
 
-REDIRECT FLOW (READ HOT PATH)
+---
 
-Client
-→ GET /:shortCode
-→ Redis lookup (O(1))
-→ DB fallback (rare)
-→ 302 Redirect
-→ Emit CLICK event (async)
+## Tech Stack
 
-ANALYTICS FLOW (ASYNC, EVENT-DRIVEN
-CLICK event
-→ Kafka topic
-→ Consumer group
-→ Batch aggregation
-→ DB updates
+- **Frontend**: React, Vite, Vanilla CSS (Variables), Phosphor Icons (SVG).
+- **Backend**: Node.js, Express, Zod (Validation).
+- **Data**: MongoDB (Source of Truth), Redis (Cache), Redpanda/Kafka (Events).
+- **Infrastructure**: Docker Compose.
 
-Data Model:
-{
-"\_id": "ObjectId",
-"shortCode": "xA91kQ",
-"longUrl": "https://example.com",
-"userId": "optional",
-"createdAt": "timestamp",
-"expiresAt": "timestamp | null",
-"isActive": true,
-"totalClicks": 0
-}
+---
 
-indexes:
-shortCode (UNIQUE)
-expiresAt (TTL)
-userId
+## Architecture
 
-Redis Cache (HOT DATA):
-KEY: short:xA91kQ
-VALUE: longUrl
-TTL: optional
+### Core Principles
+1. **Redirect path must be minimal** & synchronous.
+2. **Reads ≫ Writes**: Optimized for read-heavy traffic.
+3. **Async everything** except the redirect.
+4. **Cache first, DB second**.
 
-Kafka Topics:
-Topic -> Purpose  
- url.created -> Audit / future features
-url.clicked -> Analytics  
- url.expired -> Cleanup
+### Data Flow
 
-Performance Strategy:
-Area -> Strategy
+```mermaid
+graph TD
+    Client[Client] -->|POST /shorten| API[API Gateway]
+    Client -->|GET /:code| Redis{Redis Cache}
+    
+    subgraph "Write Path"
+    API -->|Validate| Zod
+    API -->|Persist| Mongo[(MongoDB)]
+    API -->|Cache| Redis
+    API -->|Event| Kafka[Kafka/Redpanda]
+    end
+    
+    subgraph "Read Path"
+    Redis -->|Hit| Client
+    Redis -->|Miss| Mongo
+    Mongo -->|Return| Redis
+    end
+    
+    subgraph "Async Analytics"
+    Kafka --> consumer[Click Consumer]
+    consumer --> AnalyticsDB[(Analytics DB)]
+    end
+```
 
-                      Redirect -> Redis first, no DB writes
-                      DB       -> Indexed reads
-                      Events   -> Async, non-blocking
-                      Writes   -> Batched
-                      Caching  -> TTL + invalidation
-                      Scaling  -> Stateless APIs
+---
 
-TESTING STRATEGY
+## Getting Started
 
-    Unit tests (services)
-    Integration tests (routes)
-    Redirect behavior tests
-    Kafka consumer tests
+### Prerequisites
+- Docker & Docker Compose
+- Node.js (v18+)
 
-Redirect path must be minimal and synchronous — YES
-Kafka must never block user requests — YES
-Redis is the primary read path — YES
-DB is source of truth — YES
-Analytics is eventually consistent — YES
+### 1. Start Infrastructure
+Start MongoDB, Redis, and Redpanda containers:
+```bash
+docker-compose up -d
+```
+
+### 2. Start Backend
+Install dependencies and start the API server:
+```bash
+# In the root directory
+npm install
+npm run dev
+```
+*Server runs on `http://localhost:3000`*
+
+### 3. Start Frontend
+Install dependencies and start the Vite dev server:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+*Frontend runs on `http://localhost:5173`*
+
+---
+
+## API Reference
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `POST` | `/api/shorten` | Shorten a URL. Body: `{ "longUrl": "..." }` |
+| `GET` | `/api/stats/:code` | Get metadata (clicks, date) for a short code. |
+| `GET` | `/:code` | Redirect to the original URL. |
+| `GET` | `/health` | Server health check. |
+
+---
+
+## Testing Strategy
+- **Unit Tests**: Service logic isolated tests.
+- **Integration Tests**: API route testing.
+- **Load Testing**: Redis/Kafka throughput validation.
+
+---
+
+**Created by [cmiski](https://github.com/cmiski)**
