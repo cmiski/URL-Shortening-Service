@@ -2,7 +2,7 @@
 
 **SHORTsee** is a production-grade URL shortening service designed for speed, reliability, and usability. It features a blazing-fast backend (Redis + MongoDB + Kafka) and a polished & Minimal React frontend.
 
-![Frontend Preview](https://res.cloudinary.com/dy2944cxq/image/upload/v1770226694/Screenshot_2026-02-04_225934_sye0eb.png)
+![Frontend Preview](https://res.cloudinary.com/dy2944cxq/image/upload/v1770227146/Screenshot_2026-02-04_225934_fdo3kl.png)
 ![Light-mode](https://res.cloudinary.com/dy2944cxq/image/upload/v1770227156/Screenshot_2026-02-04_230124_td6apz.png)
 ![Frontend Preview](https://res.cloudinary.com/dy2944cxq/image/upload/v1770227197/Screenshot_2026-02-04_230042_mv81mb.png)
 
